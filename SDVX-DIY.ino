@@ -134,7 +134,7 @@ void loop() {
   encFuncRight();
   degenFadeLeft();
   degenFadeRight();
-  //reactiveLighting();
+  reactiveLighting();
   updateLighting();
 }
 
@@ -168,7 +168,7 @@ void checkSingleKeyEvent(int i){
 }
 
 void checkAllKeyEvents(){
-  for(int i = 0; i < sizeof(buttonPin)/2; i++){
+  for(int i = 0; i < sizeof(buttonPin) / 2; i++){
     if(switchType[i] == true){
       if(digitalRead(buttonPin[i]) == LOW && buttonState[i] == false){
         Keyboard.press(asciiKey[i]);
@@ -249,26 +249,24 @@ void updateMousePositionRight(){
 
 void reactiveLighting(){
   if(buttonState[6] == true && pixelState[6] == false){
-    for(int i = 0; sizeof(startAddress)/2; i++){
+    for(int i = 0; i < sizeof(startAddress) / 2; i++){
       strip.setPixelColor(startAddress[i], strip.Color(200, 50, 15));
     }
     pixelState[6] = true;
   }
   else if(buttonState[6] == false && pixelState[6] == true){
-    for(int i = 0; sizeof(startAddress)/2; i++){
+    for(int i = 0; i < sizeof(startAddress) / 2; i++){
       strip.setPixelColor(startAddress[i], strip.Color(100, 100, 100));
     }
     pixelState[6] = false;
   }
-  Serial.print(buttonState[6]);
-  Serial.println(pixelState[6]);
-  //strip.show();
 }
 
 void updateLighting(){
   if((millis() - refreshTimer) > (1000 / REFRESH_RATE)){
     refreshTimer = millis();
     ring.show();
+    strip.show();
   }
 }
 
