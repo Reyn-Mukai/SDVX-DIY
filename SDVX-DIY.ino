@@ -8,8 +8,8 @@
 #define BTB_PIN A3
 #define BTC_PIN A4
 #define BTD_PIN A5
-#define FxL_PIN A1
-#define FxR_PIN A0
+#define FxL_PIN A0
+#define FxR_PIN A1
 #define START_PIN 7
 
 /* LED Output Pins */
@@ -17,8 +17,8 @@
 #define BTB_LED 10
 #define BTC_LED 11
 #define BTD_LED 12
-#define FxL_LED 6
-#define FxR_LED 5
+#define FxL_LED 5
+#define FxR_LED 6
 #define START_LED 13
 
 /* Software Debounce Interval */
@@ -51,7 +51,7 @@ Encoder encRight(ENC_2_PIN_A, ENC_2_PIN_B);
 /* Button */
 unsigned int buttonPin[7] = {BTA_PIN, BTB_PIN, BTC_PIN, BTD_PIN, FxL_PIN, FxR_PIN, START_PIN};
 unsigned long keyTimer[7] = {0, 0, 0, 0, 0, 0, 0};
-bool buttonState[7] = {false, false, false, false, false, false, false};
+bool buttonState[7];
 bool switchType[7] = {true, true, true, true, false, false, true};
 char asciiKey[7] = {0x64, 0x66, 0x6A, 0x6B, 0x6D, 0x63, 0x31};
 
@@ -61,7 +61,7 @@ unsigned int fadeLevelRight = 180;
 unsigned long fadeTimerLeft = 0;
 unsigned long fadeTimerRight = 0;
 unsigned int ledPin[7] = {BTA_LED, BTB_LED, BTC_LED, BTD_LED, FxL_LED, FxR_LED, START_LED};
-bool pixelState[7] = {false, false, false, false, false, false, false};
+bool pixelState[7];
 int glowAddress[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 int bottomAddress [3] = {44, 45, 46};
 int topLeftAddress[3] = {12, 13, 14};
@@ -77,21 +77,21 @@ int fxlAddress[2] = {37, 38};
 int fxrAddress[2] = {39, 40};
 unsigned long refreshTimer = 0;
 
-  /* Pixel Sectors
-   * side lighting 0-11
-   * top left 12-14
-   * start 15-17
-   * top right 18-20
-   * right side 21,34-36,47
-   * btd 22,23,32,33
-   * btc 23,24,31,32
-   * btb 24,25,30,31
-   * bta 25,26,29,30
-   * left side 27,28,41-43
-   * fxr 37,38
-   * fxl 39,40
-   * bottom 44-46
-   */
+/* Pixel Sectors
+   side lighting 0-11
+   top left 12-14
+   start 15-17
+   top right 18-20
+   right side 21,34-36,47
+   btd 22,23,32,33
+   btc 23,24,31,32
+   btb 24,25,30,31
+   bta 25,26,29,30
+   left side 27,28,41-43
+   fxr 37,38
+   fxl 39,40
+   bottom 44-46
+*/
 
 /* Startup Loop */
 void setup() {
@@ -134,7 +134,7 @@ void loop() {
   encFuncRight();
   degenFadeLeft();
   degenFadeRight();
-  reactiveLighting();
+  //reactiveLighting();
   updateLighting();
 }
 
@@ -206,7 +206,6 @@ void degenFadeLeft(){
     fadeLevelLeft--;
     fadeTimerLeft = micros();
   }
-  //ring.show();
 }
 void degenFadeRight(){
   if(micros() - fadeTimerRight >= DEGEN_FADE_INTERVAL && fadeLevelRight > 0){
@@ -216,7 +215,6 @@ void degenFadeRight(){
     fadeLevelRight--;
     fadeTimerRight = micros();
   }
-  //ring.show();
 }
 
 void encFuncLeft(){
@@ -232,11 +230,11 @@ void encFuncRight(){
 }
 
 void updateDegenFadeLeft(){
-  if(encLeft.read() != 0 && fadeLevelLeft < MAX_RING_LEVEL) fadeLevelLeft+=2;
+  if(encLeft.read() != 0 && fadeLevelLeft < MAX_RING_LEVEL) fadeLevelLeft += 2;
 }
 
 void updateDegenFadeRight(){
-  if(encRight.read() != 0 && fadeLevelRight < MAX_RING_LEVEL) fadeLevelRight+=2;
+  if(encRight.read() != 0 && fadeLevelRight < MAX_RING_LEVEL) fadeLevelRight += 2;
 }
 
 void updateMousePositionLeft(){
@@ -248,6 +246,15 @@ void updateMousePositionRight(){
 }
 
 void reactiveLighting(){
+  for(int i = 4; i < sizeof(pixelState) / 2; i++){
+    if(buttonState[i] == true && pixelState[i] == false){
+      if(i == 4){
+        for(int j = 0; j < sizeof(fxlAddress) / 2; j++){
+          strip.setPixelColor(fxlAddress[i], strip.Color(0, 0, 0));
+        }
+      }
+    }
+  }
   if(buttonState[6] == true && pixelState[6] == false){
     for(int i = 0; i < sizeof(startAddress) / 2; i++){
       strip.setPixelColor(startAddress[i], strip.Color(200, 50, 15));
