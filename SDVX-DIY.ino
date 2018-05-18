@@ -7,8 +7,8 @@
 #define BTB_PIN A3
 #define BTC_PIN A4
 #define BTD_PIN A5
-#define FxL_PIN A0
-#define FxR_PIN A1
+#define FxL_PIN A1
+#define FxR_PIN A0
 #define START_PIN 7
 
 /* LED Output Pins */
@@ -16,8 +16,8 @@
 #define BTB_LED 10
 #define BTC_LED 11
 #define BTD_LED 12
-#define FxL_LED 5
-#define FxR_LED 6
+#define FxL_LED 6
+#define FxR_LED 5
 #define START_LED 13
 
 /* Software Debounce Interval */
