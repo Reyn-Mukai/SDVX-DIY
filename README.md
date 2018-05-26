@@ -1,2 +1,3 @@
-# SDVX-DIY
-A DIY SDVX controller with RGB underglow.
+# A DIY SDVX/K-Shoot Mania controller
+
+This program was made for the DIY guide at https://sdvx-diy.github.io/.
