@@ -7,8 +7,8 @@
 #define BTB_PIN A3
 #define BTC_PIN A4
 #define BTD_PIN A5
-#define FxL_PIN A1
-#define FxR_PIN A0
+#define FxL_PIN A0
+#define FxR_PIN A1
 #define START_PIN 7
 
 /* LED Output Pins */
@@ -16,8 +16,8 @@
 #define BTB_LED 10
 #define BTC_LED 11
 #define BTD_LED 12
-#define FxL_LED 6
-#define FxR_LED 5
+#define FxL_LED 5
+#define FxR_LED 6
 #define START_LED 13
 
 /* Software Debounce Interval */
@@ -37,7 +37,7 @@ Encoder encRight(ENC_2_PIN_A, ENC_2_PIN_B);
 unsigned int buttonPin[7] = {BTA_PIN, BTB_PIN, BTC_PIN, BTD_PIN, FxL_PIN, FxR_PIN, START_PIN};
 unsigned long keyTimer[7] = {0, 0, 0, 0, 0, 0, 0};
 bool buttonState[7];
-bool switchType[7] = {true, true, true, true, false, false, true};
+bool switchType[7] = {true, true, true, true, true, true, true};
 char asciiKey[7] = {0x64, 0x66, 0x6A, 0x6B, 0x6D, 0x63, 0x31};
 
 /* Lighting */
@@ -68,35 +68,6 @@ void loop() {
   checkAllKeyEvents();
   encFuncLeft();
   encFuncRight();
-}
-
-void checkSingleKeyEvent(int i){
-  if(switchType[i] == true){
-    if(digitalRead(buttonPin[i]) == LOW && buttonState[i] == false){
-      Keyboard.press(asciiKey[i]);
-      digitalWrite(ledPin[i], HIGH);
-      buttonState[i] = true;
-      keyTimer[i] = millis();
-    }
-    else if(digitalRead(buttonPin[i]) == HIGH && buttonState[i] == true && millis() - keyTimer[i] > DEBOUNCE){
-      Keyboard.release(asciiKey[i]);
-      digitalWrite(ledPin[i], LOW);
-      buttonState[i] = false;
-    }
-  }
-  else{
-    if(digitalRead(buttonPin[i]) == HIGH && buttonState[i] == false){
-      Keyboard.press(asciiKey[i]);
-      digitalWrite(ledPin[i], HIGH);
-      buttonState[i] = true;
-      keyTimer[i] = millis();
-    }
-    else if(digitalRead(buttonPin[i]) == LOW && buttonState[i] == true && millis() - keyTimer[i] > DEBOUNCE){
-      Keyboard.release(asciiKey[i]);
-      digitalWrite(ledPin[i], LOW);
-      buttonState[i] = false;
-    }
-  }
 }
 
 void checkAllKeyEvents(){
